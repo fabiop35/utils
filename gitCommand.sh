@@ -13,6 +13,9 @@ git push -u origin master
 > cat ~/.ssh//id_rsa.pub #create new ssh-key in github.com
 > ssh -T git@github.com
 
+#clone privte repo
+git clone https://$PAT@github.com/fabiop35/AI.git
+
 ###
 
 GIT_SSH=C:\IC\putty\PLINK.EXE

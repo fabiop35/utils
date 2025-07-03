@@ -36,3 +36,39 @@ https://thelinuxforum.com/articles/919-how-to-install-gui-on-ubuntu-24-04-server
 
 kubectl -n default exec -it catalog-service curl -v localhost:8080
 minikube ssh curl -v 172.17.0.23:82
+
+##mint
+#ssh
+sudo apt update && sudo apt install openssh-server
+sudo ufw allow ssh
+sudo systemctl enable ssh
+sudo systemctl status ssh
+
+#Change timezone
+$ sudo timedatectl set-timezone America/Bogota
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
