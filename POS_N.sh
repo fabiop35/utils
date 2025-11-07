@@ -133,10 +133,24 @@ SHOW CREATE TABLE products;
 
 docker exec -i unicentaopos mariadb-dump -u unicenta -punicenta --no-data unicentaopos
 $docker exec -i mariadb-dump -u unicenta -punicenta --no-data unicentaopos > output_dbdump_file.sql #e
-    
+   
+#BACKUP   
+> docker exec -i unicentaopos mariadb-dump -u unicenta -punicenta unicentaopos > output_dbdump_file_10-12-2025.sql #OK Full backup
 
-mariadb-dump -u unicenta -punicenta --no-data unicentaopos > output_dbdump_file.sql
-mysqldump -u your_user -p your_database stockcurrent > stockcurrent_backup.sql
+#Restore the data from your backup file:
+mariadb -u root -p12345678 unicentaopos < output_dbdump_file_10-12-2025.sql
+
+
+#LOAD DATA FROM SCRIPT
+> docker exec -i unicentaopos mariadb -u unicenta -punicenta < ARTICULOS_final_sql_inserts.sql
+> docker exec -i unicentaopos mariadb -u unicenta -punicenta < product_cat_inserts.sql
+
+### CREATE DATABASE USER
+CREATE DATABASE unicentaopos;
+CREATE USER 'unicenta'@'localhost' IDENTIFIED BY 'unicenta';
+GRANT ALL PRIVILEGES ON unicenta.* TO 'unicenta'@'localhost'; #check
+FLUSH PRIVILEGES;
+EXIT;
 
 
 #printer: 
@@ -337,10 +351,6 @@ curl -X GET http://localhost:8081/api/v1/suppliers
 
 
 
-
-
-
-
 docker pull oscarfonts/h2
 docker run -d -p 8082:81 -p 9092:1521 \
     -e H2_OPTIONS="-web -webAllowOthers -tcp -tcpAllowOthers -ifNotExists" \
@@ -352,10 +362,10 @@ jdbc:h2:tcp://localhost:1521/test
  
  
 ###ToDo ###
--Create Product
--Get all the the categories
--Get all the Taxes
--Test ith MySQL DB
+-Create Product - Done
+-Get all the the categories - Done
+-Get all the Taxes - Done
+-Test ith MySQL DB - Done
 to create tax  fectch tax categories
 -SPRING REST DOCS - check
 -*IP Backend
@@ -368,9 +378,9 @@ to create tax  fectch tax categories
 -Suppliers - current debt
 -Caused by: java.sql.SQLIntegrityConstraintViolationException: Duplicate entry '7707668553314' Err creando producto
 *Display on products
--product Pagination
+-product Pagination - Done
 -Generate image for products using ia
--create product with code bars
+-create product with code bars - Done
 *How is calculate the sale price, beneficio bruto, margen.
 #UI
 -Error when click to close the autocomplete field
@@ -393,6 +403,19 @@ For better UX, consider debouncing search while scrolling.
 -enabled/disabled products
 ***Visualización de niveles de stock por ubicación, add more locations.
 -For ecommerce, a product can be augmented by its description and reviews.
+
+##########
+### AI ###
+##########
+*Search products by voice
+
+
+
+###################################
+###### MANEJO DE DASHBOARDS #######
+###################################
+-Sales by month
+-Sales by day 
 
 
 *The idea behind the maxdebt field in the context of a customer is to limit the amount of money the customer owes the business. This is a risk management tool for the business.
@@ -591,19 +614,214 @@ this.scanner = new BrowserMultiFormatReader({
   Esto prevendrá problemas de seguridad al acceder a la cámara en entornos HTTPS.
   
   
+###PRINTER
+Management -> Printer.Ticket.Logo.jpg 
+./com/unicenta/pos/templates/Printer.TicketPreview.xml
   
+
+com.unicenta.pos.forms.AppConfig  
+com.unicenta.pos.forms.JRootApp  
+com.unicenta.pos.payment.JPaymentCashPos  
   
+#Color images
+change the color to RGB: 144, 238, 144 background white  
+change the color to RGB: 144, 238, 144 background white
+
+################################
+######### CERTIFICATES #########
+################################
+#Backend Windows
+> Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+>choco install mkcert
+>Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+irm get.scoop.sh | iex
+>scoop bucket add extras
+>scoop install mkcert
+>mkcert -install
+>mkcert localhost
+ localhost.pem (certificate)
+ localhost-key.pem (private key)
+# Generate certificate for multiple domains
+> mkcert example.test localhost 127.0.0.1 ::1 
+# Generate wildcard certificate
+> mkcert "*.example.test" example.test
+# Generate certificate for specific IP
+>mkcert 192.168.10.5
+   192.168.10.5-key.pem
+   192.168.10.5.pem
+>choco install openssl
+#OK copy to  src\main\resources
+>openssl pkcs12 -export -out keystore_192.p12 -inkey 192.168.10.5-key.pem -in 192.168.10.5.pem -name springboot
+# Convert PKCS12 to JKS (optional)
+keytool -importkeystore -srckeystore keystore_192.p12 -srcstoretype pkcs12 -destkeystore keystore.jks -deststoretype JKS
+
+#Linux Client
+> 
+
+##################
+#Solution 2: Deploy Your CA Certificate to All Machines
+
+Step 1: Create Your Certificate Authority (CA)
+# Create CA private key
+> openssl genrsa -out my-ca.key 2048
+
+# Create CA certificate (valid for 10 years)
+openssl req -x509 -new -key my-ca.key -out my-ca.crt -days 3650 -subj "/CN=UniposWeb Local CA"
+openssl req -x509 -new -key my-ca.key -out my-ca.crt -days 3650 -subj "//CN=UniposWeb Local CA" #Git bash
+
+Step 2: Create Server Certificate with Proper SANs
+vim server.conf
+
+Step 3: Generate Server Key and Certificate Signing Request (CSR)
+# Create server private key
+openssl genrsa -out uniposweb.key 2048
+
+# Create CSR using the config file
+openssl req -new -key uniposweb.key -out uniposweb.csr -config server.conf
+
+Step 4: Sign the Server Certificate with Your CA
+vim ca.conf
+
+# Create empty database and serial files
+echo "01" > serial.txt
+touch index.txt
+
+mkdir newcerts
+
+Sign the certificate:
+# Sign the CSR with your CA
+openssl ca -config ca.conf -in uniposweb.csr -out uniposweb.crt -extensions v3_leaf -notext -batch
+
+Step 5: Create Complete Certificate Chain File
+# Combine server certificate and CA certificate
+cat uniposweb.crt my-ca.crt > uniposweb-fullchain.crt
+
+Step 6: Create PKCS12 Keystore for Tomcat
+# Create PKCS12 file with full chain
+openssl pkcs12 -export -out keystore.p12 -inkey uniposweb.key -in uniposweb-fullchain.crt -name tomcat -passout pass:12345678
+
+Step 7: Configure Tomcat
+keystore.p12
+
+#Install on Windows:
+certmgr.msc -> my-ca.crt
+
+##Angular
+uniposweb.crt (server certificate)
+uniposweb.key (private key)
+my-ca.crt (CA certificate - for client trust)
+
+
+Step 2: Create a certificate chain file for Angular
+# Combine server cert and CA cert for complete chain
+cat uniposweb.crt my-ca.crt > uniposweb-chain.crt
+
+ng serve --ssl --ssl-cert uniposweb-chain.crt --ssl-key uniposweb.key --host uniposweb --port 4200
+
+
+### ### deploying an Angular app in production ###
+
+
+
+
+http://192.168.0.1/
+ modem ZTE F660,
+ Model: ZXHN F660
+ Product: GPON ONT
+ SN: ZTEGC0526810
+ WIFIetb
+ 80CD2716
+ 
+IPv4: 200.119.48.4 
+
+
+check open ports
+https://www.yougetsignal.com/tools/open-ports/
+
+
+####### SALES ###########
+select * from closedcash;
+select * from payments;
+select * from tickets;
+
+pos_messages_es.properties:button.closecash=Cerrar caja >>> com/unicenta/pos/panels/JPanelCloseMoney.clas
+
+#DataLogicSystem
+centralizes database operations for core system functions like user management, permissions, cash sessions, resource files, audit logging, and data import/export within the unicenta POS system.
+
+#Report
+pos_messages_es.properties:Menu.Closing=Cierres de caja
+
+#Cierres de caja
+./com/unicenta/reports/sales_closedproducts.jrxml
+
+./com/unicenta/reports/sales_closedproducts_1.bs
+
+
+pos_messages.properties:Menu.Closing=Cash Closed
+
+label.title.cashclosed
+
+*File: sales_closedpos_1.jrxml
+  SELECT
+  closedcash.HOST,
+  closedcash.HOSTSEQUENCE,
+  closedcash.MONEY,
+  closedcash.DATESTART,
+  closedcash.DATEEND,
+  payments.PAYMENT,
+  SUM(payments.TOTAL) AS TOTAL
+  FROM closedcash, payments, receipts
+  WHERE closedcash.MONEY = receipts.MONEY AND payments.RECEIPT = receipts.ID
+  GROUP BY closedcash.HOST, closedcash.HOSTSEQUENCE, closedcash.MONEY, closedcash.DATESTART, closedcash.DATEEND, payments.PAYMENT
+  ORDER BY closedcash.HOST, closedcash.HOSTSEQUENCE
+
+
+
+closedcash
+#sales_closedpos.jrxml #OK
+#changed the title:
+<textFieldExpression><![CDATA[$R{label.title.cashclosed}]]></textFieldExpression> -> 
+                          <textFieldExpression><![CDATA["Cierres de caja"]]></textFieldExpression>
+
+./com/unicenta/pos/templates/Menu.Root.txt
+ 🔹Which terminals (hosts) were active?
+ 🔹What were the start and end times for each cash drawer session? 
+ 🔹What was the total amount collected per terminal?
+ 🔹What was the total amount collected per session?
+ 🔹How much was collected via each payment method (Cash, Card, etc.) for each session?
+ 🔹What is the overall total collected across all terminals and sessions within the specified period?
+ 
+ 
+✅✅✅ File with the correct QUERY: sales_closedpos.bs
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+#.bs
+SELECT closedcash.HOST, closedcash.HOSTSEQUENCE, closedcash.MONEY, 
+                    closedcash.DATESTART, closedcash.DATEEND, payments.PAYMENT, 
+                    SUM(payments.TOTAL) AS TOTAL 
+                    FROM closedcash, payments, receipts 
+                    WHERE closedcash.MONEY = receipts.MONEY AND payments.RECEIPT = receipts.ID AND ?(QBF_FILTER) 
+                    GROUP BY closedcash.HOST, closedcash.HOSTSEQUENCE, closedcash.MONEY, closedcash.DATESTART, closedcash.DATEEND, payments.PAYMENT 
+                    ORDER BY closedcash.HOST, closedcash.HOSTSEQUENCE
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+
+

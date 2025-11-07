@@ -1,3 +1,5 @@
+
+console.aws.amazon.com
 #
 4.2.1 Installing the CLI
  $ curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"

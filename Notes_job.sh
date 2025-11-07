@@ -45,7 +45,66 @@ Experiencia con Chroma, Qdrant u otras soluciones vectoriales para indexar y rec
 Seguimiento de literatura clave (“Attention Is All You Need”, DeepSeek, etc.).
 Formación autodidacta vía cursos/seminarios de IA de Stanford, Berkeley u organizaciones similares. 
 
+-Experiencia comprobada en al menos 01 proyecto de RPA con herramientas como Auto-it, Python, BluePrism, Automation Anywhere, UiPath, WorkFusion u otras herramientas de RPA. 
+
+-Workflows de IA (2 años)
+Diseño e implementación de flujos de trabajo en N8N (o herramientas equivalentes) para automatizar procesos de IA. 
+-Experiencia en Java con Springboott, Angular, NodeJs y Ionic.
 
 
+-Milton Ochoa
+
+Requisitos:
+
+- Experiencia en el desarrollo de aplicaciones Java 8/11.
+- Conocimientos en microservicios, Spring 0 y Spring Boot.
+- Experiencia en plataformas en la nube como PCF, Azure o AWS.
+Familiarity with AWS, Kubernetes, Kafka, New Relic, Splunk
+· Familiarity with test automation and CI/CD pipeline
+· Familiarity with Relational databases such as PostgreSQL and MySQL.
+· Familiarity with non-relational databases such as DynamoDB, MongoDB 
+
+#Analista Data Analytics - Makro Supermayorista S.A
+-Automatizar reportes y procesos para aumentar la eficiencia del equipo comercial. 
+-Monitorear e interpretar indicadores clave (KPIs) relacionados con clientes y ventas. 
+-Apoyar en el desarrollo de herramientas de analítica que faciliten la toma de decisiones. 
+-Asegurar la calidad y disponibilidad de la información para los equipos internos.
+
+-Entre 2 - 3 años de experiencia en análisis de datos o roles similares.
+Conocimiento técnico avanzado en SQL, Python, Power BI y/o R. 
+-Deseable experiencia en proyectos vinculados a ventas o sector retail. 
+
+#Programador IA
+- implementar algoritmos avanzados que permitan a nuestros productos ofrecer experiencias más inteligentes y personalizadas a nuestros clientes.
+-desarrollo de modelos predictivos, la implementación de sistemas de aprendizaje automático y la mejora continua de nuestras soluciones de IA, entre otras. 
+- profundo conocimiento de lenguajes de programación como Python, experiencia con frameworks de aprendizaje automático como TensorFlow o PyTorch.
+-comprensión avanzada de bases de datos y sistemas de almacenamiento. 
+
+#
+ Power BI
 
 
+#
+JWT, OAuth2, JMS 
+
+
+--
+diseño de interfaces reactivas
+Socket.io para aplicaciones interactivas
+-agentes de IA como LangChain y LangGraph incluyendo diseño de flujos, agentes, herramientas y memory.
+-- Conocimiento de IA generativa y uso de LLMs para tareas prácticas (ej: automatizar llamadas, evaluar calidad, generar acciones). 
+
+--
+POWERBI Y LOOCKER STUDIO 
+· Messaging experience with PubSub, Kafka 
+
+--Tableau: analisis y desarrollo de dashboard en Tablea,  Power bi y SQL
+
+---
+Manejo de herramientas como Dynatrace, Elastic, Grafana o Zabbix (deseable). 
+
+-
+Flutter 
+
+--
+herramientas de inteligencia de negocios (Qlik, Tableau, Power BI, OBIEE), análisis de datos estadísticos, Ciencia de Datos y Analítica de Negocios.

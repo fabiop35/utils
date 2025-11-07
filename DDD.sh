@@ -20,3 +20,4 @@ Microservice Architecture
 
 Microservice architecture is an architectural style where a large software application is divided into small, independent loosely coupled services. These services are responsible for specific, well-defined functionality and can communicate with each other over the network. Microservices allow for the development, deployment, and scaling of individual services independently, providing benefits like agility, scalability, and maintainability.
 
+#Book: Learning Domain-Driven Design by Vlad Khononov
